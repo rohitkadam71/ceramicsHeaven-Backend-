@@ -1,7 +1,8 @@
-package com.ceramicsheaven.responses;
+package com.ceramicsheaven.controllers;
 
 import com.ceramicsheaven.model.Product;
 import com.ceramicsheaven.exceptions.ProductException;
+import com.ceramicsheaven.responses.ApiResponse;
 import com.ceramicsheaven.services.ProductService;
 import com.ceramicsheaven.requests.ProductRequest;
 import org.springframework.http.HttpStatus;
