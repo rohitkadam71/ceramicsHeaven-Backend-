@@ -127,32 +127,46 @@ public class ProductServiceImplementation implements ProductService {
 
     @Override
     public Page<Product> getAllProduct(String category, List<String> colors, List<String> sizes, Integer minPrice, Integer maxPrice, Integer minDiscount, String sort, String stock, Integer pageNumber, Integer pageSize) throws ProductException {
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-//        Category category = categoryRepository.findById(categoryId).orElse(null);
-        List<Product> productList = productRepository.filterProducts(category,minPrice,maxPrice,minDiscount,sort);
+        List<Product> productList = productRepository.filterProducts(category, minPrice, maxPrice, minDiscount, sort);
 
-        if (!colors.isEmpty()){
-            productList = productList.stream().filter(p -> colors.stream().anyMatch(c -> c.equalsIgnoreCase(p.getColor()))).collect(Collectors.toList());
+        if (!colors.isEmpty()) {
+            productList = productList.stream()
+                    .filter(p -> colors.stream().anyMatch(c -> c.equalsIgnoreCase(p.getColor())))
+                    .collect(Collectors.toList());
         }
 
-        if (stock!=null){
-            if(stock.equals("in_stock")){
+        if (!sizes.isEmpty()) {
+            productList = productList.stream()
+                    .filter(p -> p.getSizes().stream().anyMatch(s -> {
+                        String[] dimensions = s.toString().split(",");
+                        String sizeStr = dimensions[0].substring(dimensions[0].indexOf('=') + 1).trim() + "x" +
+                                dimensions[1].substring(dimensions[1].indexOf('=') + 1).trim();
+                        return sizes.contains(sizeStr);
+                    }))
+                    .collect(Collectors.toList());
+        }
+
+        if (stock != null) {
+            if (stock.equals("in_stock")) {
                 productList = productList.stream().filter(p -> p.getQuantity() > 0).collect(Collectors.toList());
             } else if (stock.equals("out_of_stock")) {
                 productList = productList.stream().filter(p -> p.getQuantity() < 1).collect(Collectors.toList());
             }
         }
 
-        int startIndex = (int)pageable.getOffset();
+        int startIndex = (int) pageable.getOffset();
         int endIndex = Math.min(startIndex + pageable.getPageSize(), productList.size());
 
-        List<Product> pageContent =productList.subList(startIndex, endIndex);
+        List<Product> pageContent = productList.subList(startIndex, endIndex);
 
         Page<Product> filteredProducts = new PageImpl<>(pageContent, pageable, productList.size());
 
         return filteredProducts;
     }
+
+
 
     @Override
     public List<Product> findAllProducts() throws ProductException{

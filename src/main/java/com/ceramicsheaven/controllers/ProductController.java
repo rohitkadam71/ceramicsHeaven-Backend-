@@ -17,17 +17,25 @@ public class ProductController {
 
 	@Autowired
 	private ProductService productService;
-	
+
 	@GetMapping("/products")
-	public ResponseEntity<Page<Product>> findProductByCategory(@RequestParam String category, @RequestParam List<String> color,
-															   @RequestParam List<String> size, @RequestParam Integer minPrice, @RequestParam Integer maxPrice, @RequestParam Integer minDiscount,
-															   @RequestParam String sort, @RequestParam String stock, @RequestParam Integer pagenumber, @RequestParam Integer pageSize) throws ProductException {
-		
+	public ResponseEntity<Page<Product>> findProductByCategory(@RequestParam String category,
+															   @RequestParam List<String> color,
+															   @RequestParam List<String> size,
+															   @RequestParam(required = false) Integer minPrice,
+															   @RequestParam(required = false) Integer maxPrice,
+															   @RequestParam(required = false) Integer minDiscount,
+															   @RequestParam String sort,
+															   @RequestParam String stock,
+															   @RequestParam Integer pagenumber,
+															   @RequestParam Integer pageSize) throws ProductException {
+
 		Page<Product> productPage = productService.getAllProduct(category, color, size, minPrice, maxPrice, minDiscount, sort, stock, pagenumber, pageSize);
-		
-		return new ResponseEntity<Page<Product>>(productPage,HttpStatus.ACCEPTED);
+
+		return new ResponseEntity<>(productPage, HttpStatus.ACCEPTED);
 	}
-	
+
+
 	@GetMapping("/products/id/{productId}")
 	public ResponseEntity<Product> findProductByIdHandler(@PathVariable Long productId)throws ProductException{
 		
