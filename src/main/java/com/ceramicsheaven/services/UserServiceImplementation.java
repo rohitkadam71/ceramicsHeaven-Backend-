@@ -46,4 +46,20 @@ public class UserServiceImplementation implements UserService{
 		return user;
 	}
 
+	@Override
+	public User updateUser(String jwt, User user) throws UserException {
+		String email = jwtProvider.getEmailFromToken(jwt);
+		User existingUser = userRepository.findByEmail(email);
+
+		if(existingUser == null){
+			throw new UserException("User Not Found");
+		}
+
+		existingUser.setFirstName(user.getFirstName());
+		existingUser.setLastName((user.getLastName()));
+		existingUser.setMobile(user.getMobile());
+		existingUser.setGender(user.getGender());
+		return userRepository.save(existingUser);
+	}
+
 }

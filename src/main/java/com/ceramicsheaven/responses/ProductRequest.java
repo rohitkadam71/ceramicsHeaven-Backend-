@@ -6,7 +6,8 @@ import com.ceramicsheaven.model.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProductRequest {
+public class
+ProductRequest {
 	
 	private String title;
 	
